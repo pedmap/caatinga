@@ -5,7 +5,7 @@ data_path <- Sys.getenv("DATA_PATH")
 vector_path <- paste0(Sys.getenv("VEC_PATH"), "caatinga.gpkg")
 
 # List all TIFF files in directory
-tif_files <- list.files(data_path, pattern = "*.(tif)$", full.names = TRUE)
+tif_files <- list.files(data_path, pattern = ".*(tif)$", full.names = TRUE)
 
 # Function to filter files by year pattern
 filter_files_by_year <- function(file_list, year_pattern) {
