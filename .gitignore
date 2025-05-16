@@ -3,3 +3,9 @@
 .RData
 .Ruserdata
 .Renviron
+
+renv/library/
+renv/cache/
+renv/staging/
+renv/.gitignore
+renv/activate.R
