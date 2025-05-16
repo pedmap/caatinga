@@ -19,9 +19,10 @@ analysis_years <- 2021:2022  #1985:2023
 target_crs <- "EPSG:4674"  # SIRGAS 2000
 
 # Group files by year
-files_by_year <- sapply(analysis_years, 
-                        function(year) filter_files_by_year(tif_files, as.character(year)), 
-                        simplify = FALSE)
+files_by_year <- lapply(analysis_years, 
+                        function(year) {
+                          filter_files_by_year(tif_files, as.character(year))
+                        })
 names(files_by_year) <- analysis_years
 
 # Load and project rasters to target crs
@@ -37,7 +38,9 @@ merged_rasters <- lapply(raster_collections, function(collection) {
   merge(collection, algo = 1)
 })
 
-# Helper functions
+# Plotting part
+# just for testing...
+# some helper functions
 extract_year_from_filename <- function(filename) {
   pattern <- ".*_(\\d{4})$"
   sub(pattern, "\\1", filename)
