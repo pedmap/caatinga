@@ -5,7 +5,7 @@ data_path <- Sys.getenv("DATA_PATH")
 vector_path <- paste0(Sys.getenv("VEC_PATH"), "caatinga.gpkg")
 
 # List all TIFF files in directory
-tif_files <- list.files(data_path, pattern = ".*(tif)$", full.names = TRUE)
+tif_files <- list.files(data_path, pattern = "\\.tif$", full.names = TRUE)
 
 # Function to filter files by year pattern
 filter_files_by_year <- function(file_list, year_pattern) {
@@ -15,7 +15,7 @@ filter_files_by_year <- function(file_list, year_pattern) {
 # Load Caatinga boundary vector
 caatinga_boundary <- vect(vector_path)
 
-analysis_years <- 2021:2022  #1985:2023
+analysis_years <- 2022  #1985:2023
 target_crs <- "EPSG:4674"  # SIRGAS 2000
 
 # Group files by year
@@ -50,16 +50,19 @@ create_plot_title <- function(year) {
   sprintf("Queimadas em %s", year)
 }
 
+cropped_rasters <- lapply(merged_rasters, function(r) {
+  crop(r, caatinga_boundary, mask = TRUE, snap = "out", extend = TRUE)
+})
+
 # plot each cropped raster
-for (raster in merged_rasters) {
-  year <- extract_year_from_filename(names(raster))
+for (i in seq_along(cropped_rasters)) {
+  year <- names(cropped_rasters)[i]
   plot_title <- create_plot_title(year)
   
-  raster |> 
-    crop(caatinga_boundary, mask = TRUE, snap = "out", extend = TRUE) |> 
-    terra::plot(
-      main = plot_title,
-      col = c("black", "white"),
-      buffer=T
-    )
+  terra::plot(
+    cropped_rasters[[i]],
+    main = plot_title,
+    col = c("black", "white"),
+    buffer = TRUE
+  )
 }
